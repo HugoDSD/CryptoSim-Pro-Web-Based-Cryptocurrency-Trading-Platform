@@ -1,0 +1,24 @@
+info:
+  name: "connexion "
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:5025/api/Auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "email": "ILONA.test@efrei.fr",
+        "password": "Password123!"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTdiZTFhNy03MTkwLTQzNWMtOGE3OS1kNGNiNzdlNDc1NGUiLCJlbWFpbCI6Imxlb24udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwiZmFtaWx5X25hbWUiOiJERSBTT1VTQSBESUFTIiwianRpIjoiNzBjYTY1YWItNGY1Ni00NzcxLTk1ZTEtOWM5MmJlMTlmMTI5IiwibmJmIjoxNzgyMTU2ODUxLCJleHAiOjE3ODIxNjQwNTEsImlhdCI6MTc4MjE1Njg1MX0.XI2Cv9-CyRxavTCYG9T3fUwtEVQXWo7_Iem0SWYuDtE
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

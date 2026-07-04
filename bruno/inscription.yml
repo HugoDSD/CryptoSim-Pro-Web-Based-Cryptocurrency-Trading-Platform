@@ -1,0 +1,24 @@
+info:
+  name: inscription
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:5025/api/Auth/register
+  body:
+    type: json
+    data: |-
+      {
+        "email": "ILONA.test@efrei.fr",
+        "password": "Password123!",
+        "name": "Hugo",
+        "surname": "DE SOUSA DIAS"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
