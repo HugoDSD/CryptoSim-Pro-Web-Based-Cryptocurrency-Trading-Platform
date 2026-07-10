@@ -4,11 +4,18 @@ using BackEnd_CryptoSim.MODEL;
 
 namespace BackEnd_CryptoSim.PERSIST;
 
+// On hérite de IdentityDbContext<AppUser> pour inclure le système d'authentification
 public class AppDb : IdentityDbContext<AppUser>
 {
     public AppDb(DbContextOptions<AppDb> options) : base(options)
     {
     }
+
+    //On declare les tables de nos MODELS
+    public DbSet<Portfolio>Portfolios{get;set;}
+    public DbSet<Transaction>Transactions{get;set;}
+    public DbSet<Watchlist> Watchlists{get;set;}
+    public DbSet<PriceAlert> PriceAlerts{get;set;}
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,6 +28,20 @@ public class AppDb : IdentityDbContext<AppUser>
        //     .WithMany(u => u.Histories)
        //     .HasForeignKey(h => h.UserId)
         //    .OnDelete(DeleteBehavior.Cascade);
+
+
+
+        // Configuration stricte de la précision mathématique pour éviter les pertes
+            modelBuilder.Entity<AppUser>().Property(u => u.CashBalance).HasColumnType("decimal(18,8)");
+            
+            modelBuilder.Entity<Portfolio>().Property(p => p.Quantity).HasColumnType("decimal(18,8)");
+            modelBuilder.Entity<Portfolio>().Property(p => p.AvgBuyPrice).HasColumnType("decimal(18,8)");
+
+            modelBuilder.Entity<Transaction>().Property(t => t.Quantity).HasColumnType("decimal(18,8)");
+            modelBuilder.Entity<Transaction>().Property(t => t.Price).HasColumnType("decimal(18,8)");
+            modelBuilder.Entity<Transaction>().Property(t => t.Fee).HasColumnType("decimal(18,8)");
+
+            modelBuilder.Entity<PriceAlert>().Property(pa => pa.TargetPrice).HasColumnType("decimal(18,8)");
     }
 }
 

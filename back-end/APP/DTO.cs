@@ -67,3 +67,27 @@ public class CryptoPriceDto
     public double Volume24h { get; set; }
 }
 
+
+
+
+
+
+public class TradeRequestDto
+{
+    [Required(ErrorMessage = "L'identifiant de la cryptomonnaie est requis.")]
+    public string CryptoId{get;set;} = string.Empty;
+    
+    [Required(ErrorMessage ="Le type de l'ordre est requis. (BUY ou SELL)")]
+    [RegularExpression("^(BUY|SELL)$", ErrorMessage = "Le type doit être 'BUY' ou 'SELL'.")]
+    public string Type {get;set;} = string.Empty;
+
+
+    [Required(ErrorMessage = "La quantité est requise.")]
+    [Range(0.00000001, double.MaxValue, ErrorMessage = "La quantité doit être strictement positive.")]
+    public decimal Quantity { get; set; }
+}
+
+public class PortfolioDashboardDto
+{
+    
+}

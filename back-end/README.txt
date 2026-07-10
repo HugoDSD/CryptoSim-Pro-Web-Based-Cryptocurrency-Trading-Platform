@@ -18,7 +18,7 @@ Note: le fichier de démarage "appsettings.json" n'est pas disponible sur le git
 
 
 
-##Commande pour créer la Base de donnée + Update ses tables
+##Commande pour créer la Base de donnée + lancer la migration de ses tables
 
 - créer la base de donnée
  psql -U postgres (acceder à POSTGRE)
@@ -26,7 +26,7 @@ Note: le fichier de démarage "appsettings.json" n'est pas disponible sur le git
  \q (quite la console postgre)
 
  - créer les tables / les mettres à jour
- dotnet ef migrations add InitialIdentitySetup (changer le nom)
+ dotnet ef migrations add InitialIdentitySetup (changer le nom si migration)
  dotnet ef database update
 
 
