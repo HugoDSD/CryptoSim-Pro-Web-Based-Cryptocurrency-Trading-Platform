@@ -1,0 +1,23 @@
+info:
+  name: Erreur_Vente_A_Decouvert
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:5025/api/Trading/execute
+  body:
+    type: json
+    data: |-
+      {
+          "CryptoId": "ethereum",
+          "Type": "SELL",
+          "Quantity": 10
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,23 @@
+info:
+  name: Vente_Valide
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:5025/api/Trading/execute
+  body:
+    type: json
+    data: |-
+      {
+          "CryptoId": "bitcoin",
+          "Type": "SELL",
+          "Quantity": 0.1
+        }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

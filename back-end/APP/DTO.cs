@@ -42,16 +42,16 @@ public class CoinGeckoRequest
 public class CoinGeckoSimplePriceData
 {
     [JsonPropertyName("usd")]
-    public double Usd { get; set; }
+    public decimal Usd { get; set; }
 
     [JsonPropertyName("usd_market_cap")]
-    public double UsdMarketCap { get; set; }
+    public decimal UsdMarketCap { get; set; }
 
     [JsonPropertyName("usd_24h_vol")]
-    public double Usd24hVol { get; set; }
+    public decimal Usd24hVol { get; set; }
 
     [JsonPropertyName("usd_24h_change")]
-    public double Usd24hChange { get; set; }
+    public decimal Usd24hChange { get; set; }
 
     [JsonPropertyName("last_updated_at")]
     public long LastUpdatedAt { get; set; }
@@ -61,10 +61,10 @@ public class CoinGeckoSimplePriceData
 public class CryptoPriceDto
 {
     public string Id { get; set; } = string.Empty; 
-    public double CurrentPrice { get; set; }
-    public double MarketCap { get; set; }
-    public double PriceChange24h { get; set; }
-    public double Volume24h { get; set; }
+    public decimal CurrentPrice { get; set; }
+    public decimal MarketCap { get; set; }
+    public decimal PriceChange24h { get; set; }
+    public decimal Volume24h { get; set; }
 }
 
 
@@ -87,7 +87,15 @@ public class TradeRequestDto
     public decimal Quantity { get; set; }
 }
 
-public class PortfolioDashboardDto
+public class TransactionHistoryDto
 {
-    
+    public int Id { get; set; }
+    public string CryptoId { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty; // BUY ou SELL
+    public decimal Quantity { get; set; }
+    public decimal Price { get; set; }
+    public decimal Fee { get; set; }
+    public decimal TotalValue => (Quantity * Price) + (Type == "BUY" ? Fee : -Fee); 
+    public DateTime CreatedAt { get; set; }
 }
+

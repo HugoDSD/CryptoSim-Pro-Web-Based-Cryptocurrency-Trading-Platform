@@ -1,0 +1,23 @@
+info:
+  name: Erreur_Fonds_Insuffisants
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:5025/api/Trading/execute
+  body:
+    type: json
+    data: |-
+      {
+          "CryptoId": "bitcoin",
+          "Type": "BUY",
+          "Quantity": 50
+        }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-
+using System.Text.Json.Serialization;
 
 namespace BackEnd_CryptoSim.MODEL
 {
@@ -10,7 +10,7 @@ namespace BackEnd_CryptoSim.MODEL
 
         // Pour le connecter à l'user concerné
         public required string UserId { get; set; }
-        [ForeignKey("UserId")]public AppUser? User { get; set; }
+        [ForeignKey("UserId")][JsonIgnore]public AppUser? User { get; set; }
 
         //Detail sur la transaction
         public required string CryptoId{get;set;}

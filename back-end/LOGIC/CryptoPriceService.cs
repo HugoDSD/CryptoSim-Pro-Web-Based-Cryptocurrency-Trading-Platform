@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Identity;
-using BackEnd_CryptoSim.MODEL;
+
 using BackEnd_CryptoSim.PERSIST;
 using BackEnd_CryptoSim.LOGIC.Interfaces;
 using BackEnd_CryptoSim.MODEL.APP.DTOs;
 using Microsoft.Extensions.Caching.Memory;
-using System.Net.Http.Json;
 
 
 namespace BackEnd_CryptoSim.LOGIC.Services;

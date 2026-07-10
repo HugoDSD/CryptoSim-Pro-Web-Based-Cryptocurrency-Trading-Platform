@@ -5,6 +5,7 @@ using BackEnd_CryptoSim.PERSIST;
 using BackEnd_CryptoSim.COMMON;
 using BackEnd_CryptoSim.LOGIC.Services;
 using BackEnd_CryptoSim.LOGIC.Interfaces;
+using BackEnd_CryptoSim.LOGIC.Services.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -40,8 +41,9 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddHttpClient<ICryptoPriceService, CryptoPriceService>(); // Configuration du client HTTP pour le service CryptoPrice
 builder.Services.AddMemoryCache();
-
-
+builder.Services.Configure<TradingRulesSettings>(builder.Configuration.GetSection("TradingRules")); //permet de recuperer les paramètres de trading qu'une seule fois et de les stocker pour toutes les instances
+builder.Services.AddScoped<IMiddleOffice, MiddleOffice>();
+builder.Services.AddScoped<IBackOffice, BackOffice>();
 
 // ...
 

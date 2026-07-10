@@ -1,0 +1,25 @@
+info:
+  name: history
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: http://localhost:5025/api/Trading/execute
+  body:
+    type: json
+    data: |-
+      {
+          "CryptoId": "bitcoin",
+          "Type": "BUY",
+          "Quantity": 0.5
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiYzJhODQ4OWQtZGM4ZC00NDkzLTgwNjEtNGJiMDFkMjRiZTA3IiwibmJmIjoxNzgzNzA5MzM3LCJleHAiOjE3ODM3MTY1MzcsImlhdCI6MTc4MzcwOTMzN30.xwq6CMQVY5V8kkjuT197FcOlwlVb-v3F9ZWHdRhFUTg
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
