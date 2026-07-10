@@ -38,6 +38,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+builder.Services.AddHttpClient<ICryptoPriceService, CryptoPriceService>(); // Configuration du client HTTP pour le service CryptoPrice
+builder.Services.AddMemoryCache();
+
+
 
 // ...
 

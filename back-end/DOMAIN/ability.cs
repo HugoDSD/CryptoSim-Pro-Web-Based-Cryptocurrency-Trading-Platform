@@ -12,4 +12,12 @@ public interface IAuthService
 
 
 
+public interface ICryptoPriceService
+{
+    Task <IEnumerable<CryptoPriceDto>> GetMarketPriceAsync();  // Will Allow us to get the prices for our 10 cryptos
+    Task <CryptoPriceDto> GetPriceAsync(string cryptoID);              // Will allow us to get the prices for the crypto with this ID
+}
+
+
+
     
