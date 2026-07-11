@@ -99,3 +99,33 @@ public class TransactionHistoryDto
     public DateTime CreatedAt { get; set; }
 }
 
+
+
+public class PortfolioIndividualDashboardDto
+{
+    public string CryptoId { get; set; } = string.Empty;
+    public decimal Quantity { get; set; }       
+    public decimal AvgBuyPrice { get; set; }     // Le PRU actuel de la ligne
+    public decimal CurrentPrice { get; set; }    // Le prix spot actuel du marché
+    public decimal TotMarketValue { get; set; }  // Quantité * CurrentPrice
+    public decimal InitialCost { get; set; }     // Quantité * AvgBuyPrice
+    public decimal PAndL { get; set; }           // TotMarketValue - InitialCost
+    public decimal PAndLPercentage { get; set; } // Performance de la ligne en %
+
+}
+
+public class PortfolioTotalDashboardDto
+{
+    // La liste de toutes les positions de nos crytpos
+    public IEnumerable<PortfolioIndividualDashboardDto> Portfolios { get; set; } = new List<PortfolioIndividualDashboardDto>();
+
+    // Indicateur des performance global de ce  compte
+    public decimal CashBalance { get; set; }      // Le cash disponible 
+    public decimal TotalCryptoValue { get; set; } // Somme des TotMarketValue de toutes les lignes
+    public decimal NetLiquidationValue { get; set; } // CashBalance + TotalCryptoValue
+    
+    // Performance globale du portefeuille
+    public decimal TotalPAndL { get; set; }       // Plus-value/Moins-value totale en USD
+    public decimal EarningReturn { get; set; }     // Performance globale en %
+
+}

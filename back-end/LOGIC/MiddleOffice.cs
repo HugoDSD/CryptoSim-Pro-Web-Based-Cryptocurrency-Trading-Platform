@@ -89,6 +89,82 @@ namespace BackEnd_CryptoSim.LOGIC.Services
             }
             return (true, "Trade validé.");
         }
-    }
 
+
+
+        public PortfolioTotalDashboardDto CalculateDashboard(AppUser user, IEnumerable<CryptoPriceDto> allPrices)
+        {
+            var dashboard = new PortfolioTotalDashboardDto
+            {
+                CashBalance = user.CashBalance, 
+                Portfolios = new List<PortfolioIndividualDashboardDto>()
+            };
+
+            // On convertie notre liste en dictionnaire avec pour clé l'id de le crypto
+            var priceDictionary = allPrices.ToDictionary(p => p.Id, p => p.CurrentPrice);
+            
+            var individualPositions = new List<PortfolioIndividualDashboardDto>();
+            decimal totalInitialCostOfCrypto = 0;
+
+            //  Boucle sur chacune des cryptos de notre portofolio global
+            if (user.Portfolios != null)
+            {
+                foreach (var position in user.Portfolios)
+                {
+                    // Récupère le prix actuel ou 0 si la crypto n'est pas trouvée
+                    decimal currentPrice = priceDictionary.GetValueOrDefault(position.CryptoId, 0);
+                    
+                    decimal initialCost = position.Quantity * position.AvgBuyPrice;
+                    decimal totMarketValue = position.Quantity * currentPrice;
+                    decimal pAndL = totMarketValue - initialCost;
+                    
+                    // Calcul du pourcentage de P&L de la ligne (évite la division par zéro)
+                    decimal pAndLPercentage;
+                    if (initialCost > 0)
+                    {
+                        pAndLPercentage = (pAndL / initialCost) * 100;
+                    }
+                    else
+                    {
+                        pAndLPercentage = 0;
+                    }
+
+                    // Instanciation du DTO individuel
+                    var individualDto = new PortfolioIndividualDashboardDto
+                    {
+                        CryptoId = position.CryptoId,
+                        Quantity = position.Quantity,
+                        AvgBuyPrice = position.AvgBuyPrice,
+                        CurrentPrice = currentPrice,
+                        InitialCost = initialCost,
+                        TotMarketValue = totMarketValue,
+                        PAndL = pAndL,
+                        PAndLPercentage = pAndLPercentage
+                    };
+
+                    individualPositions.Add(individualDto);
+
+                    // Performance global du portfolio
+                    dashboard.TotalCryptoValue += totMarketValue;
+                    totalInitialCostOfCrypto += initialCost;
+                }
+            }
+
+            // On termine les derniers calcul concernant le portfolio
+            dashboard.Portfolios = individualPositions;
+            dashboard.NetLiquidationValue = dashboard.CashBalance + dashboard.TotalCryptoValue;
+            dashboard.TotalPAndL = dashboard.TotalCryptoValue - totalInitialCostOfCrypto;
+            
+            if (totalInitialCostOfCrypto > 0)
+            {
+                dashboard.EarningReturn = (dashboard.TotalPAndL / totalInitialCostOfCrypto) * 100;
+            }
+            else
+            {
+                dashboard.EarningReturn = 0;
+            }
+
+            return dashboard;
+        }
+    }
 }
