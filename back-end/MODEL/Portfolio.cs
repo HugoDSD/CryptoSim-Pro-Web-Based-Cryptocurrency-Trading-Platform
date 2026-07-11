@@ -10,7 +10,7 @@ namespace BackEnd_CryptoSim.MODEL
         public required string UserId { get; set; }
         [ForeignKey("UserId")] public AppUser? User { get; set; }    
         public required string CryptoId { get; set; }
-        public decimal Quantity { get; set; }
+        [ConcurrencyCheck] public decimal Quantity { get; set; } // permet de faire crasher le logiciel si une execution se produit alors qu'une autre est entrain davoir lieu = evite les problèmes de Concurrence
         public decimal AvgBuyPrice { get; set; }
     }    
 }
