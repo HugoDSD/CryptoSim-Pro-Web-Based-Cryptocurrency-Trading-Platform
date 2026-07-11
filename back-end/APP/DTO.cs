@@ -129,3 +129,16 @@ public class PortfolioTotalDashboardDto
     public decimal EarningReturn { get; set; }     // Performance globale en %
 
 }
+
+
+
+public class LeaderBoardUserDto
+{
+    public int Classement{get;set;}
+    public string UserName{get;set;}= string.Empty;
+    public decimal NetLiquidationValue{get;set;}
+    public decimal TotalPAndL{get;set;}
+    public decimal EarningReturn { get; set; }
+    public decimal TotalCryptoValue { get; set; } 
+    public int ActivityVolume { get; set; }
+}

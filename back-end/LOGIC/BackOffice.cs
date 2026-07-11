@@ -149,7 +149,7 @@ namespace BackEnd_CryptoSim.LOGIC.Services
 /*
             Logique : 
 
-    Ici on a mis en place une concurrence optimiste. C'est a dire que dans les classe AppUser.cs et Portfolio.cs on a mis en place [ConcurrencyCheck] qui s'assure que la valeur
+    Ici on a mis en place une concurrence optimiste. C'est a dire que dans les classe AppUser.cs et Portfolio.cs on desormais un [ConcurrencyCheck] qui s'assure que la valeur
     de CashBalance et Quantity n'est pas modifié par une autre execition de Execute que la notre. L'erreur sera ainsi capté ici par le catch (DbUpdateConcurrencyException)
     C'est ultra-léger car on ne bloque pas la base de données avec des verrous lourds qui ralentissent l'application. On part du principe 
     que le spam de requêtes est rare, mais si cela arrive, la base de données rejette le doublon instantanément et protège le compte de l'utilisateur.

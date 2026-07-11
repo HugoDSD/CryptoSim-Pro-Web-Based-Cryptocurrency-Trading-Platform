@@ -160,6 +160,50 @@ public class TradingController:ControllerBase
     }
 
 
+    [HttpGet("leaderboard")]
+    public async Task<IActionResult> GetLeaderBoard([FromQuery] string? sortBy)
+    {
+        try
+        {
+            sortBy = sortBy?.ToLower();
+            var validCriteria = new[] { "nlv", "cryptovalue", "activity", "percentage" };
+
+            if (string.IsNullOrEmpty(sortBy) || !validCriteria.Contains(sortBy))
+            {
+                sortBy = "nlv"; 
+            }
+            
+            var allUsersTask = _context.Users.Include(u => u.Portfolios).Include(u => u.Transactions).ToListAsync();
+            var cryptoPricesTask =  _crypto.GetMarketPriceAsync();
+
+
+            await Task.WhenAll(allUsersTask, cryptoPricesTask);
+            var allUsers = allUsersTask.Result;
+            var allInfoCrypto = cryptoPricesTask.Result;
+            
+            if (allUsers == null)
+            {
+                return NotFound(new { Success = false, Message = "Impossible de charger tous les utilisateurs" });
+            }
+            if(allInfoCrypto == null)
+            {
+                return NotFound(new { Success = false, Message = "Impossible de récupérer le cours du marché des cryptos" });
+            }
+
+
+            var leaderboard =  await _middleOffice.GetLeaderboardAsync(allUsers, allInfoCrypto, sortBy);
+            return Ok(leaderboard);
+        }
+        catch(Exception Ex)
+        {
+            Console.WriteLine($"[ERROR] Erreur LeaderBoard : {Ex.Message}");
+            return StatusCode(500, "Une erreur est survenue lors de la récupération des 10 valeurs du LeaderBoard");
+        }
+
+
+    }
+
+
 
 
 

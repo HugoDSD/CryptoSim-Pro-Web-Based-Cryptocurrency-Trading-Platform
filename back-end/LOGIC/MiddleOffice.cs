@@ -166,5 +166,69 @@ namespace BackEnd_CryptoSim.LOGIC.Services
 
             return dashboard;
         }
+
+        public Task<IEnumerable<LeaderBoardUserDto>> GetLeaderboardAsync(IEnumerable<AppUser> allUsers, IEnumerable<CryptoPriceDto> allPrices, string sortBy)
+        {
+            var leaderboardList = new List<LeaderBoardUserDto>();
+
+            //  On boucle sur tous les utilisateurs pour recuperer les informations du dashboard
+            foreach (var user in allUsers)
+            {
+               
+                var userDashboard = CalculateDashboard(user, allPrices);
+
+                //  On extrait juste ce dont le leaderboard a besoin 
+                leaderboardList.Add(new LeaderBoardUserDto
+                {
+                    UserName = $"{user.Name} {user.Surname}", 
+                    NetLiquidationValue = userDashboard.NetLiquidationValue,
+                    TotalPAndL = userDashboard.TotalPAndL,
+                    EarningReturn = userDashboard.EarningReturn,
+                    TotalCryptoValue = userDashboard.TotalCryptoValue, 
+                    ActivityVolume = user.Transactions?.Count ?? 0
+                });
+            }
+
+            // On applique le tri dynamique selon le paramètre de l'utilisateur
+            IEnumerable<LeaderBoardUserDto> sortedList;
+            if (sortBy == "percentage")
+            {
+                sortedList = leaderboardList.OrderByDescending(u => u.EarningReturn);
+            }
+            else if (sortBy == "cryptovalue")
+            {
+                sortedList = leaderboardList.OrderByDescending(u => u.TotalCryptoValue);
+            }
+            else if (sortBy == "activity")
+            {
+                sortedList = leaderboardList.OrderByDescending(u => u.ActivityVolume);
+            }
+            else
+            {
+                // Tri par défaut ("nlv")
+                sortedList = leaderboardList.OrderByDescending(u => u.NetLiquidationValue);
+            }
+
+            // On extrait le top 10 et on attribut les rangs
+            var top10 = sortedList
+                .Take(10)
+                .Select((userDto, index) => new LeaderBoardUserDto
+                {
+                    Classement = index + 1,
+                    UserName = userDto.UserName,
+                    NetLiquidationValue = userDto.NetLiquidationValue,
+                    TotalPAndL = userDto.TotalPAndL,
+                    EarningReturn = userDto.EarningReturn,
+                    TotalCryptoValue = userDto.TotalCryptoValue,
+                    ActivityVolume = userDto.ActivityVolume
+                })
+                .ToList();
+
+            return Task.FromResult<IEnumerable<LeaderBoardUserDto>>(top10);
+        }
+
+
+
+
     }
 }

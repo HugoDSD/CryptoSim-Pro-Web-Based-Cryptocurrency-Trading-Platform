@@ -18,6 +18,7 @@ namespace BackEnd_CryptoSim.LOGIC.Services.Interfaces
         /// <returns>Un tuple asynchrone confirmant le succès de l'opération en base de données.</returns>
         (bool IsValid, string ErrorMessage) ValidateTrade(AppUser user, TradeRequestDto request, IEnumerable<CryptoPriceDto> allPrices);
         PortfolioTotalDashboardDto CalculateDashboard(AppUser user, IEnumerable<CryptoPriceDto> allPrices);
+        Task<IEnumerable<LeaderBoardUserDto>> GetLeaderboardAsync(IEnumerable<AppUser> allUsers, IEnumerable<CryptoPriceDto> allPrices, string sortBy );
     }
 
 }
