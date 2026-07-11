@@ -142,3 +142,22 @@ public class LeaderBoardUserDto
     public decimal TotalCryptoValue { get; set; } 
     public int ActivityVolume { get; set; }
 }
+
+
+public class CreatePriceAlertDto
+{
+    public string CryptoId { get; set; } = string.Empty;
+    public decimal TargetPrice{get;set;}
+    [RegularExpression("^(ABOVE|BELOW)$", ErrorMessage = "Le type doit être 'ABOVE' ou 'BELOW'.")]
+    public string Direction{get;set;}= string.Empty;
+}
+
+
+public class PriceAlertResponseDto
+{
+    public int Id { get; set; }
+    public string CryptoId { get; set; } = string.Empty;
+    public decimal TargetPrice { get; set; }
+    public string Direction { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+}

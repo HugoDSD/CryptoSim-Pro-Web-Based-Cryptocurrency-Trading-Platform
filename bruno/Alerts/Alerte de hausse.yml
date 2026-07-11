@@ -1,0 +1,25 @@
+info:
+  name: Alerte de hausse
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:5025/api/PriceAlert/create
+  body:
+    type: json
+    data: |-
+      {
+        "cryptoId": "bitcoin",
+        "targetPrice": 65000.50,
+        "direction": "ABOVE"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiY2JhNzM4NzktYzAyNC00MDg4LTk3ODktMDVkOTA2MTdkMjNiIiwibmJmIjoxNzgzNzg5NDQ3LCJleHAiOjE3ODM3OTY2NDcsImlhdCI6MTc4Mzc4OTQ0N30.JEgiGt4TrEGutvfh397o3yl6HKFlhnTEIfDb9EtqOuE
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

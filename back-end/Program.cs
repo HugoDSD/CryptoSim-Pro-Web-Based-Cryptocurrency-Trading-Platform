@@ -9,6 +9,7 @@ using BackEnd_CryptoSim.LOGIC.Services.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using BackEnd_CryptoSim.HUBS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,10 @@ builder.Services.AddMemoryCache();
 builder.Services.Configure<TradingRulesSettings>(builder.Configuration.GetSection("TradingRules")); //permet de recuperer les paramètres de trading qu'une seule fois et de les stocker pour toutes les instances
 builder.Services.AddScoped<IMiddleOffice, MiddleOffice>();
 builder.Services.AddScoped<IBackOffice, BackOffice>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPriceAlert, PriceAlertService>();
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<PriceAlertWorker>();
 
 // ...
 
@@ -77,7 +82,7 @@ builder.Services.AddAuthentication(options =>
 // ==========================================
 // 2. CONSTRUCTION DE L'APPLICATION
 // ==========================================
-builder.Services.AddScoped<IAuthService, AuthService>(); // On dit à ASP.NET Core que chaque fois qu'on demande un IAuthService, il doit nous donner une instance de AuthService (qui est la classe concrète qui implémente notre interface IAuthService)
+ // On dit à ASP.NET Core que chaque fois qu'on demande un IAuthService, il doit nous donner une instance de AuthService (qui est la classe concrète qui implémente notre interface IAuthService)
 var app = builder.Build();
 
 // ==========================================
@@ -114,6 +119,6 @@ app.UseAuthorization();  // est ce qu'il en a le droit
 
 // Expose les futures routes de tes propres contrôleurs
 app.MapControllers();
-
+app.MapHub<BackEnd_CryptoSim.HUBS.NotificationHub>("/notificationHub");
 // Lancement du serveur
 app.Run();

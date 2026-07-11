@@ -1,0 +1,20 @@
+info:
+  name: Toggle
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: http://localhost:5025/api/PriceAlert/toggle/2
+  body:
+    type: json
+    data: ""
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiY2JhNzM4NzktYzAyNC00MDg4LTk3ODktMDVkOTA2MTdkMjNiIiwibmJmIjoxNzgzNzg5NDQ3LCJleHAiOjE3ODM3OTY2NDcsImlhdCI6MTc4Mzc4OTQ0N30.JEgiGt4TrEGutvfh397o3yl6HKFlhnTEIfDb9EtqOuE
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
