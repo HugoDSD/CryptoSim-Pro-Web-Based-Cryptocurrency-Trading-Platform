@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "email": "ILONA.test@efrei.fr",
+        "email": "hugo.test@efrei.fr",
         "password": "Password123!",
         "name": "Hugo",
         "surname": "DE SOUSA DIAS"

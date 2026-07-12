@@ -37,7 +37,8 @@ builder.Services.AddCors(options =>
         // Remplace par l'URL exacte de ton front-end Vue.js
         policy.WithOrigins("http://localhost:5173", "http://localhost:5174") 
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials(); // obligatoire pour utiliser signalr
     });
 });
 builder.Services.AddHttpClient<ICryptoPriceService, CryptoPriceService>(); // Configuration du client HTTP pour le service CryptoPrice
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IMiddleOffice, MiddleOffice>();
 builder.Services.AddScoped<IBackOffice, BackOffice>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPriceAlert, PriceAlertService>();
+builder.Services.AddScoped<IWatchList, WatchListService>();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<PriceAlertWorker>();
 

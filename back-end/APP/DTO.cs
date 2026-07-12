@@ -161,3 +161,5 @@ public class PriceAlertResponseDto
     public string Direction { get; set; } = string.Empty;
     public bool IsActive { get; set; }
 }
+
+

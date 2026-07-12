@@ -4,19 +4,14 @@ info:
   seq: 7
 
 http:
-  method: POST
-  url: http://localhost:5025/api/Trading/execute
+  method: GET
+  url: http://localhost:5025/api/Trading/history
   body:
     type: json
-    data: |-
-      {
-          "CryptoId": "bitcoin",
-          "Type": "BUY",
-          "Quantity": 0.5
-      }
+    data: ""
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiYzJhODQ4OWQtZGM4ZC00NDkzLTgwNjEtNGJiMDFkMjRiZTA3IiwibmJmIjoxNzgzNzA5MzM3LCJleHAiOjE3ODM3MTY1MzcsImlhdCI6MTc4MzcwOTMzN30.xwq6CMQVY5V8kkjuT197FcOlwlVb-v3F9ZWHdRhFUTg
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiNDQ2ODM2ZmUtNTU3My00MGU0LTliZmItNzM0NTNjNmMyNTA4IiwibmJmIjoxNzgzODcyODc2LCJleHAiOjE3ODM4ODAwNzYsImlhdCI6MTc4Mzg3Mjg3Nn0.xvzfY-2vU0W225pwIyCGBs9VO-LMvRI8zyJZSbh91Lk
 
 settings:
   encodeUrl: true

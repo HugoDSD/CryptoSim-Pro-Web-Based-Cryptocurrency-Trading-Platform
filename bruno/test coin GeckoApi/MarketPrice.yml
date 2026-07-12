@@ -1,7 +1,7 @@
 info:
-  name: Dashboard
+  name: MarketPrice
   type: http
-  seq: 5
+  seq: 1
 
 http:
   method: GET

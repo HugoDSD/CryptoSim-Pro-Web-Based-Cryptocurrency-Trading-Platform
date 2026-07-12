@@ -5,11 +5,13 @@ info:
 
 http:
   method: GET
-  url: http://localhost:<ton_port>/api/Trading/leaderboard
+  url: http://localhost:5025/api/Trading/leaderboard
   body:
     type: json
     data: ""
-  auth: inherit
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiNDYzMmEwZGItMzczMi00NTA5LWJlMzQtZDIxOTI5NmNlODM2IiwibmJmIjoxNzgzNzgwNjQ5LCJleHAiOjE3ODM3ODc4NDksImlhdCI6MTc4Mzc4MDY0OX0.yBg8393-FQ-ixVcVpLEHj-GPo3aHozLxl0GFwyG2zaw
 
 settings:
   encodeUrl: true

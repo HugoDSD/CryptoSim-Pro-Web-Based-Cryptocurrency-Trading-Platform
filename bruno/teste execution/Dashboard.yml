@@ -1,19 +1,14 @@
 info:
-  name: Achat Valide
+  name: Dashboard
   type: http
-  seq: 1
+  seq: 5
 
 http:
-  method: POST
-  url: http://localhost:5025/api/Trading/execute
+  method: GET
+  url: http://localhost:5025/api/Trading/dashboard
   body:
     type: json
-    data: |-
-      {
-          "CryptoId": "ethereum",
-          "Type": "BUY",
-          "Quantity": 0.5
-      }
+    data: ""
   auth:
     type: bearer
     token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiNzJmMjdjYzQtZjExNy00MjJkLWJkMTEtZDdlNGE4OTdhYzJjIiwibmJmIjoxNzgzNzY4OTc1LCJleHAiOjE3ODM3NzYxNzUsImlhdCI6MTc4Mzc2ODk3NX0.j5cLCTqk9yuiOn-d435klWeN68S4ir2u_MTED3Y7wUs
