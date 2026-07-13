@@ -1,9 +1,14 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from '../src/pages/LoginPage';
+import LoginPage from './pages/LoginPage';
+import Layout from './components/Layout';
+import DashboardPage from './pages/DashboardPage';
+import MarketPage from './pages/MarketPage';
+import TradingPage from './pages/TradingPage';
+import HistoryPage from './pages/HistoryPage';
+import WatchlistPage from './pages/WatchlistPage';
+import AlertsPage from './pages/AlertsPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
-
-// Composant pour protéger les routes qui nécessitent une connexion
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem('token');
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -14,14 +19,24 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route 
-          path="/app" 
+
+        <Route
           element={
             <ProtectedRoute>
+              <Layout />
             </ProtectedRoute>
-          } 
-        />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+          }
+        >
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/market" element={<MarketPage />} />
+          <Route path="/trading" element={<TradingPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/watchlist" element={<WatchlistPage />} />
+          <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );
