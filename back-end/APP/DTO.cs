@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using BackEnd_CryptoSim.MODEL;
 namespace BackEnd_CryptoSim.MODEL.APP.DTOs;
 
+
+
+// -------- LOGIN/REGISTER --------
 public class RegisterDto
 {
     [Required]
@@ -32,8 +35,9 @@ public class LoginDto
 }
 
 
-//Pour voir l'allure du json : https://docs.coingecko.com/reference/simple-price
+// -------- CONNEXION COINGECKO --------
 
+//Pour voir l'allure du json : https://docs.coingecko.com/reference/simple-price
 
 public class CoinGeckoRequest
 {
@@ -70,7 +74,7 @@ public class CryptoPriceDto
 
 
 
-
+// -------- TRADE --------
 
 public class TradeRequestDto
 {
@@ -100,7 +104,7 @@ public class TransactionHistoryDto
 }
 
 
-
+// -------- DASHBOARD --------
 public class PortfolioIndividualDashboardDto
 {
     public string CryptoId { get; set; } = string.Empty;
@@ -131,7 +135,7 @@ public class PortfolioTotalDashboardDto
 }
 
 
-
+// -------- LEARDER BOARD --------
 public class LeaderBoardUserDto
 {
     public int Classement{get;set;}
@@ -144,6 +148,9 @@ public class LeaderBoardUserDto
 }
 
 
+
+
+// -------- PRICE ALERT --------
 public class CreatePriceAlertDto
 {
     public string CryptoId { get; set; } = string.Empty;
