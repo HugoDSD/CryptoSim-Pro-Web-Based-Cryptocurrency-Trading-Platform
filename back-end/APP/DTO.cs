@@ -157,6 +157,15 @@ public class CreatePriceAlertDto
     public decimal TargetPrice{get;set;}
     [RegularExpression("^(ABOVE|BELOW)$", ErrorMessage = "Le type doit être 'ABOVE' ou 'BELOW'.")]
     public string Direction{get;set;}= string.Empty;
+
+    // Si true, un ordre est déclenché automatiquement en plus de la notification
+    public bool AutoExecute { get; set; } = false;
+
+    [RegularExpression("^(BUY|SELL)$", ErrorMessage = "Le type d'ordre doit être 'BUY' ou 'SELL'.")]
+    public string? OrderType { get; set; }
+
+    [Range(0.00000001, double.MaxValue, ErrorMessage = "La quantité doit être strictement positive.")]
+    public decimal? OrderQuantity { get; set; }
 }
 
 
@@ -167,6 +176,9 @@ public class PriceAlertResponseDto
     public decimal TargetPrice { get; set; }
     public string Direction { get; set; } = string.Empty;
     public bool IsActive { get; set; }
+    public bool AutoExecute { get; set; }
+    public string? OrderType { get; set; }
+    public decimal? OrderQuantity { get; set; }
 }
 
 

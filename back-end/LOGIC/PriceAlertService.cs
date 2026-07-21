@@ -41,7 +41,10 @@ namespace BackEnd_CryptoSim.LOGIC.Services
                         CryptoId = priceAlert.CryptoId,
                         TargetPrice = priceAlert.TargetPrice,
                         Direction = priceAlert.Direction,
-                        IsActive = priceAlert.IsActive
+                        IsActive = priceAlert.IsActive,
+                        AutoExecute = priceAlert.AutoExecute,
+                        OrderType = priceAlert.OrderType,
+                        OrderQuantity = priceAlert.OrderQuantity
                     };
 
                     
@@ -68,7 +71,10 @@ namespace BackEnd_CryptoSim.LOGIC.Services
                     CryptoId = request.CryptoId.Trim().ToLower(),
                     TargetPrice = request.TargetPrice,
                     Direction = request.Direction,
-                    IsActive = true // Active par défaut
+                    IsActive = true, // Active par défaut
+                    AutoExecute = request.AutoExecute,
+                    OrderType = request.AutoExecute ? request.OrderType : null,
+                    OrderQuantity = request.AutoExecute ? request.OrderQuantity : null
                 };
 
                 // On l'ajoute au DbSet et on pousse en base de données
@@ -82,7 +88,10 @@ namespace BackEnd_CryptoSim.LOGIC.Services
                     CryptoId = newAlert.CryptoId,
                     TargetPrice = newAlert.TargetPrice,
                     Direction = newAlert.Direction,
-                    IsActive = newAlert.IsActive
+                    IsActive = newAlert.IsActive,
+                    AutoExecute = newAlert.AutoExecute,
+                    OrderType = newAlert.OrderType,
+                    OrderQuantity = newAlert.OrderQuantity
                 };
             }
             catch (Exception Ex)
@@ -118,7 +127,10 @@ namespace BackEnd_CryptoSim.LOGIC.Services
                     CryptoId = alert.CryptoId,
                     TargetPrice = alert.TargetPrice,
                     Direction = alert.Direction,
-                    IsActive = alert.IsActive
+                    IsActive = alert.IsActive,
+                    AutoExecute = alert.AutoExecute,
+                    OrderType = alert.OrderType,
+                    OrderQuantity = alert.OrderQuantity
                 };
             }
             catch (Exception Ex)

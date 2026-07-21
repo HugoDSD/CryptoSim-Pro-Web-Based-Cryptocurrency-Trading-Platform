@@ -4,7 +4,8 @@ using BackEnd_CryptoSim.HUBS;
 using BackEnd_CryptoSim.PERSIST;
 using BackEnd_CryptoSim.MODEL;
 using BackEnd_CryptoSim.MODEL.APP.DTOs;
-using BackEnd_CryptoSim.LOGIC.Interfaces; 
+using BackEnd_CryptoSim.LOGIC.Interfaces;
+using BackEnd_CryptoSim.LOGIC.Services.Interfaces;
 
 namespace BackEnd_CryptoSim.LOGIC.Services
 {
@@ -33,6 +34,8 @@ namespace BackEnd_CryptoSim.LOGIC.Services
                     {
                         var context = scope.ServiceProvider.GetRequiredService<AppDb>();
                         var cryptoPriceService = scope.ServiceProvider.GetRequiredService<ICryptoPriceService>();
+                        var middleOffice = scope.ServiceProvider.GetRequiredService<IMiddleOffice>();
+                        var backOffice = scope.ServiceProvider.GetRequiredService<IBackOffice>();
 
                         // 1. Récupération de toutes les alertes actuellement actives en BDD
                         var activeAlerts = await context.PriceAlerts
@@ -88,16 +91,61 @@ namespace BackEnd_CryptoSim.LOGIC.Services
                                         alert.IsActive = false;
                                         hasChanges = true;
 
+                                        var message = $"Votre alerte sur {alert.CryptoId.ToUpper()} a été déclenchée ! Le prix spot a atteint {currentPrice} USD (Seuil paramétré : {alert.TargetPrice} USD).";
+                                        bool? orderSuccess = null;
+
+                                        // Si l'utilisateur a demandé un déclenchement automatique d'ordre, on l'exécute en plus de la notification
+                                        if (alert.AutoExecute && !string.IsNullOrEmpty(alert.OrderType) && alert.OrderQuantity is decimal quantity && quantity > 0)
+                                        {
+                                            var tradeRequest = new TradeRequestDto
+                                            {
+                                                CryptoId = alert.CryptoId,
+                                                Type = alert.OrderType,
+                                                Quantity = quantity
+                                            };
+
+                                            var tradeUser = await context.Users
+                                                .Include(u => u.Portfolios)
+                                                .FirstOrDefaultAsync(u => u.Id == alert.UserId, stoppingToken);
+
+                                            if (tradeUser == null)
+                                            {
+                                                orderSuccess = false;
+                                                message += " Échec de l'ordre automatique : utilisateur introuvable.";
+                                            }
+                                            else
+                                            {
+                                                var (isValid, validationError) = middleOffice.ValidateTrade(tradeUser, tradeRequest, marketPrices);
+                                                if (!isValid)
+                                                {
+                                                    orderSuccess = false;
+                                                    message += $" Échec de l'ordre automatique ({alert.OrderType} {quantity} {alert.CryptoId.ToUpper()}) : {validationError}";
+                                                }
+                                                else
+                                                {
+                                                    var (tradeSuccess, tradeMessage) = await backOffice.ExecuteTradeAsync(alert.UserId, tradeRequest, currentPrice);
+                                                    orderSuccess = tradeSuccess;
+                                                    message += tradeSuccess
+                                                        ? $" Ordre automatique exécuté : {tradeMessage}"
+                                                        : $" Échec de l'ordre automatique : {tradeMessage}";
+                                                }
+                                            }
+                                        }
+
                                         // Envoi de la notification temps réel via le Hub SignalR directement au navigateur de l'utilisateur
                                         await _hubContext.Clients.User(alert.UserId).SendAsync(
-                                            "ReceiveNotification", 
-                                            new 
-                                            { 
-                                                message = $"Votre alerte sur {alert.CryptoId.ToUpper()} a été déclenchée ! Le prix spot a atteint {currentPrice} USD (Seuil paramétré : {alert.TargetPrice} USD).",
+                                            "ReceiveNotification",
+                                            new
+                                            {
+                                                message,
                                                 cryptoId = alert.CryptoId,
                                                 direction = alert.Direction,
-                                                triggeredAt = DateTime.UtcNow
-                                            }, 
+                                                triggeredAt = DateTime.UtcNow,
+                                                autoExecute = alert.AutoExecute,
+                                                orderType = alert.OrderType,
+                                                orderQuantity = alert.OrderQuantity,
+                                                orderSuccess
+                                            },
                                             stoppingToken
                                         );
                                     }

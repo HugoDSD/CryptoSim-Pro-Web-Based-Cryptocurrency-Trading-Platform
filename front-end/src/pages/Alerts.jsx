@@ -15,6 +15,7 @@ import {
     Switch,
     Popconfirm,
     Badge,
+    Checkbox,
     App,
 } from 'antd';
 import {
@@ -23,6 +24,7 @@ import {
     DeleteOutlined,
     ArrowUpOutlined,
     ArrowDownOutlined,
+    ThunderboltOutlined,
 } from '@ant-design/icons';
 import * as signalR from '@microsoft/signalr';
 import apiService from '../services/apiService';
@@ -39,6 +41,9 @@ export default function Alerts() {
     const [cryptoId, setCryptoId] = useState('bitcoin');
     const [targetPrice, setTargetPrice] = useState(null);
     const [direction, setDirection] = useState('ABOVE');
+    const [autoExecute, setAutoExecute] = useState(false);
+    const [orderType, setOrderType] = useState('BUY');
+    const [orderQuantity, setOrderQuantity] = useState(null);
     const [creating, setCreating] = useState(false);
     const connectionRef = useRef(null);
     const loadAlerts = useCallback(async () => {
@@ -72,7 +77,7 @@ export default function Alerts() {
             notification.open({
                 message: `Price alert — ${cryptoLabel(payload?.cryptoId)}`,
                 description: payload?.message || 'One of your alerts has been triggered.',
-                type: 'info',
+                type: payload?.autoExecute ? (payload?.orderSuccess ? 'success' : 'error') : 'info',
                 duration: 0,
             });
             loadAlerts();
@@ -101,11 +106,23 @@ export default function Alerts() {
             message.warning('Please enter a strictly positive target price.');
             return;
         }
+        if (autoExecute && (!orderQuantity || orderQuantity <= 0)) {
+            message.warning('Please enter a strictly positive order quantity.');
+            return;
+        }
         setCreating(true);
         try {
-            await apiService.createPriceAlert(cryptoId, targetPrice, direction);
+            await apiService.createPriceAlert(
+                cryptoId,
+                targetPrice,
+                direction,
+                autoExecute,
+                orderType,
+                orderQuantity,
+            );
             message.success('Alert created.');
             setTargetPrice(null);
+            setOrderQuantity(null);
             await loadAlerts();
         } catch (err) {
             message.error(err.message || 'Unable to create the alert.');
@@ -151,6 +168,18 @@ export default function Alerts() {
             dataIndex: 'targetPrice',
             align: 'right',
             render: (p) => formatPrice(p),
+        },
+        {
+            title: 'Auto-order',
+            key: 'autoExecute',
+            render: (_, row) =>
+                row.autoExecute ? (
+                    <Tag icon={<ThunderboltOutlined />} color={row.orderType === 'BUY' ? 'blue' : 'orange'}>
+                        {row.orderType} {row.orderQuantity}
+                    </Tag>
+                ) : (
+                    <Tag>Notification only</Tag>
+                ),
         },
         {
             title: 'Active',
@@ -270,6 +299,7 @@ export default function Alerts() {
                             style={{
                                 width: '100%',
                                 marginTop: 4,
+                                marginBottom: 12,
                             }}
                             min={0}
                             value={targetPrice}
@@ -277,6 +307,57 @@ export default function Alerts() {
                             placeholder="0.00"
                             stringMode
                         />
+
+                        <Checkbox
+                            checked={autoExecute}
+                            onChange={(e) => setAutoExecute(e.target.checked)}
+                        >
+                            Automatically trigger an order (instead of just notifying)
+                        </Checkbox>
+
+                        {autoExecute && (
+                            <div
+                                style={{
+                                    marginTop: 12,
+                                    padding: 12,
+                                    border: '1px dashed #d9d9d9',
+                                    borderRadius: 6,
+                                }}
+                            >
+                                <Text type="secondary">Order side</Text>
+                                <Segmented
+                                    block
+                                    value={orderType}
+                                    onChange={setOrderType}
+                                    options={[
+                                        {
+                                            label: 'Buy',
+                                            value: 'BUY',
+                                        },
+                                        {
+                                            label: 'Sell',
+                                            value: 'SELL',
+                                        },
+                                    ]}
+                                    style={{
+                                        margin: '4px 0 12px',
+                                    }}
+                                />
+
+                                <Text type="secondary">Quantity</Text>
+                                <InputNumber
+                                    style={{
+                                        width: '100%',
+                                        marginTop: 4,
+                                    }}
+                                    min={0}
+                                    value={orderQuantity}
+                                    onChange={setOrderQuantity}
+                                    placeholder="0.00"
+                                    stringMode
+                                />
+                            </div>
+                        )}
 
                         <Button
                             type="primary"

@@ -113,13 +113,16 @@ class ApiService {
     getPriceAlerts(onlyActive = false) {
         return this.request(`/PriceAlert/show?onlyActive=${onlyActive}`);
     }
-    createPriceAlert(cryptoId, targetPrice, direction) {
+    createPriceAlert(cryptoId, targetPrice, direction, autoExecute = false, orderType = null, orderQuantity = null) {
         return this.request('/PriceAlert/create', {
             method: 'POST',
             body: {
                 CryptoId: cryptoId,
                 TargetPrice: targetPrice,
                 Direction: direction,
+                AutoExecute: autoExecute,
+                OrderType: autoExecute ? orderType : null,
+                OrderQuantity: autoExecute ? orderQuantity : null,
             },
         });
     }

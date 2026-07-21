@@ -72,12 +72,26 @@ public class PriceAlertController : ControllerBase
                 return BadRequest(new { Success = false, Message = "L'identifiant de la crypto ne peut pas être vide." });
             }
 
+            // Si l'utilisateur veut déclencher un ordre automatique, le type et la quantité sont obligatoires
+            if (request.AutoExecute)
+            {
+                var validOrderTypes = new[] { "BUY", "SELL" };
+                if (string.IsNullOrEmpty(request.OrderType) || !validOrderTypes.Contains(request.OrderType))
+                {
+                    return BadRequest(new { Success = false, Message = "Le type d'ordre (BUY ou SELL) est requis pour un déclenchement automatique." });
+                }
+                if (request.OrderQuantity == null || request.OrderQuantity <= 0)
+                {
+                    return BadRequest(new { Success = false, Message = "Une quantité strictement positive est requise pour un déclenchement automatique." });
+                }
+            }
+
             // On recupère les informations de l'utilisateurs (en particulier ses prices alerts)
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdFromToken))
             {
                 return BadRequest(new { Success = false, Message = "Impossible d'identifier l'utilisateur à partir du token." });
-            } 
+            }
             var user =  await _context.Users.Include(u => u.PriceAlerts).FirstOrDefaultAsync(u => u.Id == userIdFromToken);
             if (user == null)
             {

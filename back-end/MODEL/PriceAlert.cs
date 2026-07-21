@@ -19,5 +19,10 @@ namespace BackEnd_CryptoSim.MODEL
         
         // État de l'alerte
         public bool IsActive { get; set; } = true; // Passe à false une fois déclenchée
+
+        // Exécution automatique d'un ordre au déclenchement (sinon simple notification)
+        public bool AutoExecute { get; set; } = false;
+        public string? OrderType { get; set; } // "BUY" ou "SELL", requis si AutoExecute = true
+        public decimal? OrderQuantity { get; set; } // Quantité à acheter/vendre, requis si AutoExecute = true
     }
 }
