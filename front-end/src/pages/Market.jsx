@@ -93,7 +93,10 @@ export default function Market() {
                     type="primary"
                     size="small"
                     icon={<SwapOutlined />}
-                    onClick={() => navigate(`/app/trading?crypto=${row.id}`)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/app/trading?crypto=${row.id}`);
+                    }}
                 >
                     Trade
                 </Button>
@@ -148,6 +151,10 @@ export default function Market() {
                     scroll={{
                         x: 'max-content',
                     }}
+                    onRow={(row) => ({
+                        onClick: () => navigate(`/app/market/${row.id}`),
+                        style: { cursor: 'pointer' },
+                    })}
                 />
                 <div
                     style={{

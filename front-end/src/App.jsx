@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import AppLayout from './components/AppLayout';
 import Dashboard from './pages/Dashboard';
 import Market from './pages/Market';
+import AssetDetail from './pages/AssetDetail';
 import Trading from './pages/Trading';
 import Portfolio from './pages/Portfolio';
 import History from './pages/History';
@@ -32,6 +33,7 @@ export default function App() {
                 >
                     <Route index element={<Dashboard />} />
                     <Route path="market" element={<Market />} />
+                    <Route path="market/:cryptoId" element={<AssetDetail />} />
                     <Route path="trading" element={<Trading />} />
                     <Route path="portfolio" element={<Portfolio />} />
                     <Route path="history" element={<History />} />

@@ -78,6 +78,9 @@ class ApiService {
     getPrice(cryptoId) {
         return this.request(`/Market/price/${cryptoId}`);
     }
+    getOhlc(cryptoId, days = 30) {
+        return this.request(`/Market/ohlc/${cryptoId}?days=${days}`);
+    }
     executeTrade(cryptoId, type, quantity) {
         return this.request('/Trading/execute', {
             method: 'POST',
