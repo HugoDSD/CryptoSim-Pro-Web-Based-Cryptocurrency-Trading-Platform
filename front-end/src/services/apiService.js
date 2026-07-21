@@ -133,5 +133,27 @@ class ApiService {
             method: 'DELETE',
         });
     }
+    getProfile() {
+        return this.request('/Profile/show');
+    }
+    updateProfile(name, surname, email) {
+        return this.request('/Profile/update', {
+            method: 'PUT',
+            body: {
+                Name: name,
+                Surname: surname,
+                Email: email,
+            },
+        });
+    }
+    changePassword(currentPassword, newPassword) {
+        return this.request('/Profile/change-password', {
+            method: 'PUT',
+            body: {
+                CurrentPassword: currentPassword,
+                NewPassword: newPassword,
+            },
+        });
+    }
 }
 export default new ApiService();

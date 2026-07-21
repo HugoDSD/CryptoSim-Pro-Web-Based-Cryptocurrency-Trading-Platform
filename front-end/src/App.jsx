@@ -10,7 +10,7 @@ import History from './pages/History';
 import Leaderboard from './pages/Leaderboard';
 import Watchlist from './pages/Watchlist';
 import Alerts from './pages/Alerts';
-import Placeholder from './pages/Placeholder';
+import Profile from './pages/Profile';
 import apiService from './services/apiService';
 const ProtectedRoute = ({ children }) => {
     return apiService.isAuthenticated() ? children : <Navigate to="/login" replace />;
@@ -19,7 +19,7 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Placeholder title="Landing page" />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/login" element={<LoginPage />} />
 
                 <Route
@@ -39,7 +39,7 @@ export default function App() {
                     <Route path="watchlist" element={<Watchlist />} />
                     <Route path="alerts" element={<Alerts />} />
 
-                    <Route path="profile" element={<Placeholder title="Profile" />} />
+                    <Route path="profile" element={<Profile />} />
                 </Route>
 
                 <Route path="*" element={<Navigate to="/login" replace />} />

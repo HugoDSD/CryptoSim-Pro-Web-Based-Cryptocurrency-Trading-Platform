@@ -49,6 +49,7 @@ builder.Services.AddScoped<IBackOffice, BackOffice>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPriceAlert, PriceAlertService>();
 builder.Services.AddScoped<IWatchList, WatchListService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<PriceAlertWorker>();
 
