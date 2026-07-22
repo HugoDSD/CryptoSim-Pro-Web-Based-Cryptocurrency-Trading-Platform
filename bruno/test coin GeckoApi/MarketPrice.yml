@@ -1,11 +1,11 @@
 info:
-  name: inscription
+  name: MarketPrice
   type: http
-  seq: 6
+  seq: 1
 
 http:
-  method: POST
-  url: http://localhost:5025/api/Auth/register
+  method: GET
+  url: http://localhost:5025/api/market/marketprices
   body:
     type: json
     data: |-

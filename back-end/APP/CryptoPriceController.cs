@@ -58,6 +58,27 @@ public class MarketController : ControllerBase{
         }
     }
 
+    [HttpGet("ohlc/{cryptoId}")]
+    public async Task<ActionResult<IEnumerable<OhlcPointDto>>> GetOhlc(string cryptoId, [FromQuery] int days = 30)
+    {
+        // Granularités supportées par l'API CoinGecko (public/demo) pour l'endpoint OHLC
+        var allowedDays = new[] { 1, 7, 14, 30, 90, 180, 365 };
+        if (!allowedDays.Contains(days))
+        {
+            return BadRequest($"Le paramètre 'days' doit être l'une des valeurs suivantes : {string.Join(", ", allowedDays)}.");
+        }
+
+        try
+        {
+            var results = await _cryptoservice.GetOhlcAsync(cryptoId, days);
+            return Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erreur lors de la communication avec l'API : {ex.Message}");
+        }
+    }
+
 }
 
 

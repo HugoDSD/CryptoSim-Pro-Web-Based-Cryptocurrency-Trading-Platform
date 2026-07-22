@@ -42,6 +42,7 @@ public class AppDb : IdentityDbContext<AppUser>
             modelBuilder.Entity<Transaction>().Property(t => t.Fee).HasColumnType("decimal(18,8)");
 
             modelBuilder.Entity<PriceAlert>().Property(pa => pa.TargetPrice).HasColumnType("decimal(18,8)");
+            modelBuilder.Entity<Watchlist>().HasIndex(w => new { w.UserId, w.CryptoId }).IsUnique(); // Permet d'éviter d'ajouter plusieurs fois la meme crypto à la watchlist
     }
 }
 

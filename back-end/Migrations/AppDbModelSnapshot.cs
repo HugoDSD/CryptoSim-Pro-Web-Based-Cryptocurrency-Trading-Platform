@@ -31,6 +31,7 @@ namespace back_end.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CashBalance")
+                        .IsConcurrencyToken()
                         .HasColumnType("decimal(18,8)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -116,6 +117,7 @@ namespace back_end.Migrations
                         .HasColumnType("text");
 
                     b.Property<decimal>("Quantity")
+                        .IsConcurrencyToken()
                         .HasColumnType("decimal(18,8)");
 
                     b.Property<string>("UserId")
@@ -137,6 +139,9 @@ namespace back_end.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AutoExecute")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("CryptoId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -147,6 +152,12 @@ namespace back_end.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<decimal?>("OrderQuantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("OrderType")
+                        .HasColumnType("text");
 
                     b.Property<decimal>("TargetPrice")
                         .HasColumnType("decimal(18,8)");
@@ -219,7 +230,8 @@ namespace back_end.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "CryptoId")
+                        .IsUnique();
 
                     b.ToTable("Watchlists");
                 });

@@ -1,16 +1,16 @@
 info:
-  name: MarketPrice
+  name: inscription
   type: http
-  seq: 3
+  seq: 6
 
 http:
-  method: GET
-  url: http://localhost:5025/api/market/marketprices
+  method: POST
+  url: http://localhost:5025/api/Auth/register
   body:
     type: json
     data: |-
       {
-        "email": "ILONA.test@efrei.fr",
+        "email": "hugo.test@efrei.fr",
         "password": "Password123!",
         "name": "Hugo",
         "surname": "DE SOUSA DIAS"

@@ -44,15 +44,18 @@ public class TradingController:ControllerBase
             {
                 return BadRequest(new { Success = false, Message = "Impossible d'identifier l'utilisateur à partir du token." });
             } 
-            //charger les information de l'utilisateur 
-            var user = await _context.Users.Include(u => u.Portfolios).FirstOrDefaultAsync(u => u.Id == userIdFromToken);
+            // On fait en sorte de fetch en meme temps les informations sur l'utilisateur et sur les prix de la crypto pour gagner du temps
+            // Au lieu de faire l'un, attendre, puis faire l'autre des qu'il a fini et attendre de nouveau
+            var userTask =  _context.Users.Include(u => u.Portfolios).FirstOrDefaultAsync(u => u.Id == userIdFromToken);
+            var cryptoPricesTask =  _crypto.GetMarketPriceAsync();
+            await Task.WhenAll(userTask, cryptoPricesTask);
+            var user = userTask.Result;
+            var allInfoCrypto = cryptoPricesTask.Result;
+    
             if (user == null)
             {
                return NotFound(new { Success = false, Message = "Utilisateur introuvable dans la base de données." });
             }
-
-            //On va chercher le prix de la crypto
-            var allInfoCrypto = await _crypto.GetMarketPriceAsync();
             if (allInfoCrypto == null)
             {
                 return NotFound(new { Success = false, Message = "Impossible de récupérer les informations concernantl la crypto" });
@@ -106,11 +109,109 @@ public class TradingController:ControllerBase
 
             return Ok(history);
         }
-        catch (Exception ex)
+        catch (Exception Ex)
         {
-            Console.WriteLine($"[ERROR] Erreur historique : {ex.Message}");
+            Console.WriteLine($"[ERROR] Erreur historique : {Ex.Message}");
             return StatusCode(500, "Une erreur est survenue lors de la récupération de l'historique.");
         }
     }
+
+    [HttpGet("dashboard")]
+    public async Task<IActionResult> GetDashBoard()
+    {
+        try{
+             // On recupère d'abord les informations sur l'utilisateur
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            
+            if (string.IsNullOrEmpty(userIdFromToken)){
+                return Unauthorized("Impossible d'identifier l'utilisateur.");
+            }
+            // On fait en sorte de fetch en meme temps les informations sur l'utilisateur et sur les prix de la crypto pour gagner du temps
+            // Au lieu de faire l'un, attendre, puis faire l'autre des qu'il a fini et attendre
+            var userTask =  _context.Users.Include(u => u.Portfolios).FirstOrDefaultAsync(u => u.Id == userIdFromToken);
+            var cryptoPricesTask =  _crypto.GetMarketPriceAsync();
+            await Task.WhenAll(userTask, cryptoPricesTask);
+            var user = userTask.Result;
+            var allInfoCrypto = cryptoPricesTask.Result;
+            
+            if (user == null)
+            {
+                return NotFound(new { Success = false, Message = "Utilisateur introuvable dans la base de données." });
+            }
+
+            // On récupère les informations sur les cryptos actuellement
+            if(allInfoCrypto == null)
+            {
+                return NotFound(new { Success = false, Message = "Impossible de récupérer le cours du marché des cryptos" });
+            }
+
+
+            // On calcul le dashboard
+            var dashboard =  _middleOffice.CalculateDashboard(user, allInfoCrypto);
+            return Ok(dashboard);
+        }
+        catch(Exception Ex)
+        {
+            Console.WriteLine($"[ERROR] Erreur Dashboard : {Ex.Message}");
+            return StatusCode(500, "Une erreur est survenue lors de la récupération des valeurs du DashBoard");
+        }
+        
+    }
+
+
+    [HttpGet("leaderboard")]
+    public async Task<IActionResult> GetLeaderBoard([FromQuery] string? sortBy)
+    {
+        try
+        {
+            sortBy = sortBy?.ToLower();
+            var validCriteria = new[] { "nlv", "cryptovalue", "activity", "percentage" };
+
+            if (string.IsNullOrEmpty(sortBy) || !validCriteria.Contains(sortBy))
+            {
+                sortBy = "nlv"; 
+            }
+            
+            var allUsersTask = _context.Users.Include(u => u.Portfolios).Include(u => u.Transactions).ToListAsync();
+            var cryptoPricesTask =  _crypto.GetMarketPriceAsync();
+
+
+            await Task.WhenAll(allUsersTask, cryptoPricesTask);
+            var allUsers = allUsersTask.Result;
+            var allInfoCrypto = cryptoPricesTask.Result;
+            
+            if (allUsers == null)
+            {
+                return NotFound(new { Success = false, Message = "Impossible de charger tous les utilisateurs" });
+            }
+            if(allInfoCrypto == null)
+            {
+                return NotFound(new { Success = false, Message = "Impossible de récupérer le cours du marché des cryptos" });
+            }
+
+
+            var leaderboard =  await _middleOffice.GetLeaderboardAsync(allUsers, allInfoCrypto, sortBy);
+            return Ok(leaderboard);
+        }
+        catch(Exception Ex)
+        {
+            Console.WriteLine($"[ERROR] Erreur LeaderBoard : {Ex.Message}");
+            return StatusCode(500, "Une erreur est survenue lors de la récupération des 10 valeurs du LeaderBoard");
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    
 
 }
