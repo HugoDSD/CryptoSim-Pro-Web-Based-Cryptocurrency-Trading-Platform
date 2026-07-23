@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Landing from './pages/Landing';
 import LoginPage from './pages/LoginPage';
 import AppLayout from './components/AppLayout';
 import Dashboard from './pages/Dashboard';
@@ -20,7 +21,7 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<LoginPage />} />
 
                 <Route
