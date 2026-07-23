@@ -142,13 +142,14 @@ class ApiService {
     getProfile() {
         return this.request('/Profile/show');
     }
-    updateProfile(name, surname, email) {
+    updateProfile(name, surname, email, cashBalance) {
         return this.request('/Profile/update', {
             method: 'PUT',
             body: {
                 Name: name,
                 Surname: surname,
                 Email: email,
+                CashBalance: cashBalance
             },
         });
     }

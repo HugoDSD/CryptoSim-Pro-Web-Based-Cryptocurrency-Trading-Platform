@@ -13,6 +13,7 @@ export default function Profile() {
         name: '',
         surname: '',
         email: '',
+        cashBalance: 0,
     });
     const [passwordForm, setPasswordForm] = useState({
         currentPassword: '',
@@ -26,6 +27,7 @@ export default function Profile() {
                 name: data?.name || '',
                 surname: data?.surname || '',
                 email: data?.email || '',
+                cashBalance: data?.cashBalance || 0,
             });
         } catch (err) {
             setError(err.message || 'Unable to load profile.');
@@ -43,7 +45,7 @@ export default function Profile() {
         }
         setSaving(true);
         try {
-            await apiService.updateProfile(profileForm.name, profileForm.surname, profileForm.email);
+            await apiService.updateProfile(profileForm.name, profileForm.surname, profileForm.email, profileForm.cashBalance);
             message.success('Profile updated.');
         } catch (err) {
             message.error(err.message || 'Unable to update the profile.');
@@ -147,6 +149,22 @@ export default function Profile() {
                                         setProfileForm({
                                             ...profileForm,
                                             email: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <Text type="secondary">Initial Trading Balance (USD)</Text>
+                                <Input
+                                    style={{ marginTop: 4 }}
+                                    type="number"
+                                    min={0}
+                                    step={1000}
+                                    value={profileForm.cashBalance}
+                                    onChange={(e) =>
+                                        setProfileForm({
+                                            ...profileForm,
+                                            cashBalance: parseFloat(e.target.value) || 0,
                                         })
                                     }
                                 />

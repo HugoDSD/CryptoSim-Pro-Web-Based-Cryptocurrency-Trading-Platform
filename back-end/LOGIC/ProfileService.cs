@@ -25,6 +25,7 @@ namespace BackEnd_CryptoSim.LOGIC.Services
             {
                 user.Name = request.Name;
                 user.Surname = request.Surname;
+                user.CashBalance = request.CashBalance;
 
                 if (!string.Equals(user.Email, request.Email, StringComparison.OrdinalIgnoreCase))
                 {

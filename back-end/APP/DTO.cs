@@ -205,6 +205,8 @@ public class UpdateProfileDto
     [Required(ErrorMessage = "L'email est requis.")]
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
+    [Range(0, double.MaxValue, ErrorMessage = "Le montant doit être positif.")]
+    public decimal CashBalance { get; set; }
 }
 
 public class ChangePasswordDto
