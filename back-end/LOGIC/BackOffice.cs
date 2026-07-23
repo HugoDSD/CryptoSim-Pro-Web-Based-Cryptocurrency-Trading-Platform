@@ -40,7 +40,7 @@ namespace BackEnd_CryptoSim.LOGIC.Services
             decimal feeAmount = brutValue * _rules.TransactionFeePercentage;
             
             if (request.Type == "BUY")
-            {
+            {   
                 decimal totalCost = brutValue + feeAmount;
                 user.CashBalance -= totalCost; // Débit du cash
 
@@ -80,12 +80,18 @@ namespace BackEnd_CryptoSim.LOGIC.Services
             var existingPosition = user.Portfolios.FirstOrDefault(p => p.CryptoId == request.CryptoId);
             
             // On réduit la quantité possédée
-            existingPosition.Quantity -= request.Quantity;
-
-            // Si la quantité tombe à 0, on supprime la ligne du portefeuille
-            if (existingPosition.Quantity <= 0)
+            if (existingPosition != null)
             {
-                _context.Portfolios.Remove(existingPosition);
+                // Si la quantité vendue est égale à la quantité possédée, on supprime directement l'objet
+                if (existingPosition.Quantity == request.Quantity)
+                {
+                    _context.Portfolios.Remove(existingPosition);
+                }
+                else
+                {
+                    // Sinon, on réduit simplement la quantité (la vérification de concurrence s'appliquera)
+                    existingPosition.Quantity -= request.Quantity;
+                }
             }
         }
 
@@ -106,6 +112,12 @@ namespace BackEnd_CryptoSim.LOGIC.Services
         {
             await _context.SaveChangesAsync();
             return (true, $"L'ordre de {request.Type} pour {request.Quantity} {request.CryptoId} a été exécuté avec succès.");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Si on arrive ici, c'est qu'une autre requête a modifié le Cash ou la Quantity en même temps.
+            // On annule tout et on demande au Front-end de réessayer.
+            return (false, "Une transaction est déjà en cours sur votre portefeuille. Veuillez réessayer dans quelques instants.");
         }
         catch (Exception ex)
         {
@@ -131,3 +143,15 @@ namespace BackEnd_CryptoSim.LOGIC.Services
         }
     }     
 }
+
+
+
+/*
+            Logique : 
+
+    Ici on a mis en place une concurrence optimiste. C'est a dire que dans les classe AppUser.cs et Portfolio.cs on desormais un [ConcurrencyCheck] qui s'assure que la valeur
+    de CashBalance et Quantity n'est pas modifié par une autre execition de Execute que la notre. L'erreur sera ainsi capté ici par le catch (DbUpdateConcurrencyException)
+    C'est ultra-léger car on ne bloque pas la base de données avec des verrous lourds qui ralentissent l'application. On part du principe 
+    que le spam de requêtes est rare, mais si cela arrive, la base de données rejette le doublon instantanément et protège le compte de l'utilisateur.
+
+*/

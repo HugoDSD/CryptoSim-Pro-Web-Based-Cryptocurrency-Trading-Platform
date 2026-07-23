@@ -14,7 +14,9 @@ http:
           "Type": "SELL",
           "Quantity": 10
       }
-  auth: inherit
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiMjA2NGQyZWUtYzE1My00MDE0LWJlM2EtZDRlM2IwZDhjNWRhIiwibmJmIjoxNzgzNzEwNDQwLCJleHAiOjE3ODM3MTc2NDAsImlhdCI6MTc4MzcxMDQ0MH0.YPpDvRapkHRY-uKFeX7R0WVPykx2auW21KDXKdZQk3k
 
 settings:
   encodeUrl: true

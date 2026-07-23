@@ -1,0 +1,24 @@
+info:
+  name: Show
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:5025/api/PriceAlert/show?onlyActive=true
+  params:
+    - name: onlyActive
+      value: "true"
+      type: query
+  body:
+    type: json
+    data: ""
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZmVlYTVjNS1jNzg2LTRiYjktOTQ4OS1hOTM1YjUxZmFlNGIiLCJlbWFpbCI6Imh1Z28udGVzdEBlZnJlaS5mciIsImdpdmVuX25hbWUiOiJIdWdvIiwianRpIjoiY2JhNzM4NzktYzAyNC00MDg4LTk3ODktMDVkOTA2MTdkMjNiIiwibmJmIjoxNzgzNzg5NDQ3LCJleHAiOjE3ODM3OTY2NDcsImlhdCI6MTc4Mzc4OTQ0N30.JEgiGt4TrEGutvfh397o3yl6HKFlhnTEIfDb9EtqOuE
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

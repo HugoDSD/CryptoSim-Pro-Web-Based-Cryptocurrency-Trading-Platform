@@ -16,7 +16,9 @@ public class CryptoPriceService : ICryptoPriceService
 
     private const string MarketPricesCacheKey = "CryptoMarketPrices"; // Clé pour la valeurs des 10 cryptos
     private const string SinglePriceCacheKeyPrefix = "CryptoPrice_";  // Préfixe pour chacun des cryptos (Exemple : CryptoPrice_Bitcoin, CryptoPrice_Etherum ... )
+    private const string OhlcCacheKeyPrefix = "CryptoOhlc_";          // Préfixe pour l'historique OHLC (Exemple : CryptoOhlc_Bitcoin_30)
     private static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(30); // On choisi la durée de vie du cache a 30s
+    private static readonly TimeSpan OhlcCacheDuration = TimeSpan.FromMinutes(5); // Historique = données moins volatiles, on cache plus longtemps
     public CryptoPriceService(AppDb context, IConfiguration configuration, HttpClient httpClient, IMemoryCache cache)
     {
         
@@ -138,8 +140,53 @@ public class CryptoPriceService : ICryptoPriceService
         }
     }
 
+    public async Task<IEnumerable<OhlcPointDto>> GetOhlcAsync(string cryptoID, int days)
+    {
+        string cleanCryptoId = cryptoID.Trim().ToLower();
+        string cacheKey = $"{OhlcCacheKeyPrefix}{cleanCryptoId}_{days}";
 
-    
+        if (_cache.TryGetValue(cacheKey, out IEnumerable<OhlcPointDto>? cachedOhlc))
+        {
+            Console.WriteLine($"[Cache] Récupération de l'historique OHLC de {cleanCryptoId} depuis la mémoire vive.");
+            return cachedOhlc!;
+        }
+
+        // CoinGecko renvoie un tableau de bougies : [ [timestamp_ms, open, high, low, close], ... ]
+        string url = $"https://api.coingecko.com/api/v3/coins/{cleanCryptoId}/ohlc?vs_currency=usd&days={days}";
+
+        try
+        {
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<List<List<decimal>>>();
+
+            var final_result = new List<OhlcPointDto>();
+            if (result != null)
+            {
+                foreach (var candle in result)
+                {
+                    if (candle.Count < 5) continue;
+
+                    final_result.Add(new OhlcPointDto
+                    {
+                        Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)candle[0]).UtcDateTime,
+                        Open = candle[1],
+                        High = candle[2],
+                        Low = candle[3],
+                        Close = candle[4]
+                    });
+                }
+            }
+
+            _cache.Set(cacheKey, final_result, OhlcCacheDuration);
+            return final_result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[CryptoPriceService] Erreur lors de la récupération de l'historique OHLC pour {cleanCryptoId} : {ex.Message}");
+            throw;
+        }
+    }
 }
 
 
